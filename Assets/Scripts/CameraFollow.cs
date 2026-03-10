@@ -1,9 +1,5 @@
 using UnityEngine;
 
-// CameraFollow.cs
-// Attach to: Main Camera
-// Smoothly follows the player; optional X/Y clamping to prevent showing outside level
-
 public class CameraFollow : MonoBehaviour
 {
     [Header("Target")]

@@ -1,9 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-// PlayerHealth.cs
-// Attach to: Player GameObject
-
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Stats")]
@@ -27,7 +24,6 @@ public class PlayerHealth : MonoBehaviour
         UIManager.Instance?.UpdateLives(currentLives);
     }
 
-    // Call from EnemyPatrol or spike triggers
     public void TakeHit()
     {
         if (isInvincible) return;
@@ -36,16 +32,21 @@ public class PlayerHealth : MonoBehaviour
         UIManager.Instance?.UpdateLives(currentLives);
 
         if (currentLives <= 0)
-        {
             controller.Die();
-        }
         else
-        {
             StartCoroutine(InvincibilityFrames());
-        }
     }
 
-    // Brief invincibility + blink so player doesnt die instantly on next frame
+    public void KillInstantly()
+    {
+        StopAllCoroutines();    
+        isInvincible = false;
+        sr.enabled = true;     
+        currentLives = 0;
+        UIManager.Instance?.UpdateLives(currentLives);
+        controller.Die();
+    }
+
     IEnumerator InvincibilityFrames()
     {
         isInvincible = true;

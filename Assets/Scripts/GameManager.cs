@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// GameManager.cs - Attach to empty GameObject "GameManager"
-// Singleton that tracks coins, enemies killed, and game state
 
 public class GameManager : MonoBehaviour
 {

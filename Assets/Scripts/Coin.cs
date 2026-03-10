@@ -1,15 +1,10 @@
 using UnityEngine;
 
-// Coin.cs
-// Attach to: Coin prefab
-// Requires:  Collider2D with Is Trigger = true
-
 public class Coin : MonoBehaviour
 {
     [Header("Settings")]
     public int value = 1;
 
-    // Bob up and down for visual appeal
     [Header("Animation")]
     public float bobHeight = 0.15f;
     public float bobSpeed = 2f;
@@ -23,7 +18,6 @@ public class Coin : MonoBehaviour
 
     void Update()
     {
-        // Simple bob using a sine wave
         float newY = startPos.y + Mathf.Sin(Time.time * bobSpeed) * bobHeight;
         transform.position = new Vector3(startPos.x, newY, startPos.z);
     }

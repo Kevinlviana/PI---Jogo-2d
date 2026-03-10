@@ -2,8 +2,6 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
-// UIManager.cs - Attach to empty GameObject "UIManager"
-// Manages HUD: coins counter, lives, temporary messages
 
 public class UIManager : MonoBehaviour
 {

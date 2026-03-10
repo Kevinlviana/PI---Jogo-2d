@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// EnemyPatrol.cs - Attach to: Enemy prefab
-
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnemyPatrol : MonoBehaviour
 {

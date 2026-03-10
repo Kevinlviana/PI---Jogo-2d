@@ -1,13 +1,9 @@
 using UnityEngine;
 
-// MovingPlatform.cs
-// Attach to: any Platform sprite you want to oscillate
-// Bonus feature: player is parented to the platform so they ride it smoothly
-
 public class MovingPlatform : MonoBehaviour
 {
     [Header("Settings")]
-    public bool moveHorizontal = true;  // false = moves vertically
+    public bool moveHorizontal = true; 
     public float moveDistance = 3f;
     public float moveSpeed = 2f;
 
