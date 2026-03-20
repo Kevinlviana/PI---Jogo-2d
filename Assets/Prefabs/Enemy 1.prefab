@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6035133569503813285}
   - component: {fileID: 6024550127864109233}
   m_Layer: 6
-  m_Name: Enemy
+  m_Name: Enemy 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -179,8 +179,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968710b3b6315aa439d2bbe3a7eefd86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPatrol
-  moveSpeed: 2
-  patrolDistance: 5
+  moveSpeed: 7
+  patrolDistance: 10
   groundLayer:
     serializedVersion: 2
     m_Bits: 64

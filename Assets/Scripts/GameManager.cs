@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
 
     public void EnemyKilled()
     {
-        UIManager.Instance?.ShowMessage("Stomp!");
+        UIManager.Instance?.ShowMessage("Good Bye Mother F*cker!");
     }
 
     public void GameOver()
