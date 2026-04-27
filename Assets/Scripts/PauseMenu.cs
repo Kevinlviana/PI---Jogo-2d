@@ -6,7 +6,6 @@ public class PauseMenu : MonoBehaviour
 {
     public static PauseMenu Instance { get; private set; }
 
-    [Header("UI")]
     public GameObject pausePanel;
 
     public bool IsPaused { get; private set; } = false;
