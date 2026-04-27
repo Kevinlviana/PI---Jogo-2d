@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    [Header("Target")]
     public Transform target;
     public float smoothSpeed = 6f;
     public Vector3 offset = new Vector3(0, 1f, -10f);
 
-    [Header("Bounds Clamping (optional)")]
     public bool useBounds = false;
     public float minX = -10f, maxX = 50f;
     public float minY = -5f,  maxY = 20f;
