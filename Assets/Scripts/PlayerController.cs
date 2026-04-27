@@ -4,23 +4,19 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movimento")]
     public float moveSpeed = 6f;
     public float acceleration = 50f;
     public float deceleration = 40f;
 
-    [Header("Pulo")]
     public float jumpForce = 16f;
     public float jumpHoldForce = 25f;
     public float maxJumpHoldTime = 0.2f;
     public float fallMultiplier = 3.5f;
     public float lowJumpMultiplier = 2f;
 
-    [Header("Coyote Time & Jump Buffer")]
     public float coyoteTime = 0.12f;
     public float jumpBufferTime = 0.12f;
 
-    [Header("Ground Check")]
     public Transform groundCheck;
     public float groundCheckRadius = 0.15f;
     public LayerMask groundLayer;
