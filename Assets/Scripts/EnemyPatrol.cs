@@ -1,9 +1,10 @@
 using UnityEngine;
 
+
 public class EnemyPatrol : MonoBehaviour
 {
-    [Header("Movement")]
-    public float moveSpeed = 2f;
+    [Header("Movimento")]
+    public float moveSpeed = 2f;   
     public float patrolDistance = 5f;
 
     [Header("Ground Check")]
@@ -27,12 +28,7 @@ public class EnemyPatrol : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!started)
-        {
-            startPos = transform.position;
-            started = true;
-            return;
-        }
+        if (!started) { startPos = transform.position; started = true; return; }
 
         rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
 
@@ -40,30 +36,19 @@ public class EnemyPatrol : MonoBehaviour
         if (flipCooldown > 0f) return;
 
         Vector2 checkPos = new Vector2(
-            transform.position.x + direction * 0.6f,  
-            transform.position.y - 0.6f               
-        );
-
-       
+            transform.position.x + direction * 0.6f,
+            transform.position.y - 0.6f);
         bool groundAhead = Physics2D.OverlapBox(checkPos, new Vector2(0.1f, 0.2f), 0f, groundLayer);
 
-        if (!groundAhead)
-        {
-            Flip();
-            return;
-        }
-
-        if (Mathf.Abs(transform.position.x - startPos.x) > patrolDistance)
-        {
-            Flip();
-        }
+        if (!groundAhead) { Flip(); return; }
+        if (Mathf.Abs(transform.position.x - startPos.x) > patrolDistance) Flip();
     }
 
     void Flip()
     {
         direction *= -1;
         sr.flipX = (direction == -1);
-        flipCooldown = 0.5f;  
+        flipCooldown = 0.5f;
     }
 
     void OnCollisionEnter2D(Collision2D other)
@@ -77,6 +62,7 @@ public class EnemyPatrol : MonoBehaviour
             Rigidbody2D playerRb = other.gameObject.GetComponent<Rigidbody2D>();
             if (playerRb != null)
                 playerRb.linearVelocity = new Vector2(playerRb.linearVelocity.x, 8f);
+
             GameManager.Instance?.EnemyKilled();
             Destroy(gameObject);
         }
@@ -90,8 +76,7 @@ public class EnemyPatrol : MonoBehaviour
     {
         Vector2 checkPos = new Vector2(
             transform.position.x + direction * 0.6f,
-            transform.position.y - 0.6f
-        );
+            transform.position.y - 0.6f);
         bool hit = Physics2D.OverlapBox(checkPos, new Vector2(0.1f, 0.2f), 0f, groundLayer);
         Gizmos.color = hit ? Color.green : Color.red;
         Gizmos.DrawWireCube(checkPos, new Vector2(0.1f, 0.2f));
@@ -100,9 +85,8 @@ public class EnemyPatrol : MonoBehaviour
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawLine(
-                new Vector3(startPos.x - patrolDistance, transform.position.y, 0),
-                new Vector3(startPos.x + patrolDistance, transform.position.y, 0)
-            );
+                new Vector3(startPos.x - patrolDistance, transform.position.y),
+                new Vector3(startPos.x + patrolDistance, transform.position.y));
         }
     }
 }

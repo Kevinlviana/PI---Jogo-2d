@@ -2,26 +2,31 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    private bool activated = false;
+    [Header("Visual")]
+    public SpriteRenderer flagRenderer;
+    public Sprite activeSprite;   
+    public Sprite inactiveSprite; 
+    private bool isActive = false;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void Start()
     {
-        if (activated) return;
+        if (flagRenderer != null && inactiveSprite != null)
+            flagRenderer.sprite = inactiveSprite;
+    }
 
-        if (other.CompareTag("Player"))
-        {
-            activated = true;
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!other.CompareTag("Player")) return;
+        if (isActive) return;
 
-            PlayerController player = other.GetComponent<PlayerController>();
+        isActive = true;
 
-            if (player != null)
-            {
-                player.SaveCheckpoint(transform.position);
-            }
+        other.GetComponent<PlayerController>()?.SaveCheckpoint(transform.position);
 
-            Debug.Log("Checkpoint salvo!");
+        if (flagRenderer != null && activeSprite != null)
+            flagRenderer.sprite = activeSprite;
 
-            GetComponent<SpriteRenderer>().color = Color.green;
-        }
+        UIManager.Instance?.ShowMessage("Checkpoint!", 1.5f);
+
     }
 }

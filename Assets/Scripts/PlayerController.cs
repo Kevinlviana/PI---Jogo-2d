@@ -1,14 +1,15 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement")]
+    [Header("Movimento")]
     public float moveSpeed = 6f;
     public float acceleration = 50f;
     public float deceleration = 40f;
 
-    [Header("Jump")]
+    [Header("Pulo")]
     public float jumpForce = 16f;
     public float jumpHoldForce = 25f;
     public float maxJumpHoldTime = 0.2f;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 moveInput;
     private bool isGrounded;
+    private bool wasGrounded;
     private bool isDead = false;
 
     private float coyoteTimeCounter;
@@ -53,49 +55,34 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
-
         rb.freezeRotation = true;
     }
 
-    void Start()
-    {
-        LoadCheckpoint(); 
-    }
+    void Start() => LoadCheckpoint();
 
-    void OnMove(InputValue value)
-    {
-        moveInput = value.Get<Vector2>();
-    }
+    void OnMove(InputValue value) => moveInput = value.Get<Vector2>();
 
     void OnJump(InputValue value)
     {
         if (isDead) return;
-
-        if (value.isPressed)
-        {
-            jumpBufferCounter = jumpBufferTime;
-            jumpHeld = true;
-        }
-        else
-        {
-            jumpHeld = false;
-        }
+        if (value.isPressed) { jumpBufferCounter = jumpBufferTime; jumpHeld = true; }
+        else jumpHeld = false;
     }
 
     void Update()
     {
         if (isDead) return;
 
-        isGrounded = Physics2D.OverlapCircle(
-            groundCheck.position, groundCheckRadius, groundLayer);
+        wasGrounded = isGrounded;
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
-        if (isGrounded)
-            coyoteTimeCounter = coyoteTime;
-        else
-            coyoteTimeCounter -= Time.deltaTime;
+        if (!wasGrounded && isGrounded)
+            OnLand();
 
-        if (jumpBufferCounter > 0f)
-            jumpBufferCounter -= Time.deltaTime;
+        if (isGrounded) coyoteTimeCounter = coyoteTime;
+        else coyoteTimeCounter -= Time.deltaTime;
+
+        if (jumpBufferCounter > 0f) jumpBufferCounter -= Time.deltaTime;
 
         if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
         {
@@ -111,15 +98,9 @@ public class PlayerController : MonoBehaviour
         }
 
         if (rb.linearVelocity.y < 0)
-        {
-            rb.linearVelocity += Vector2.up * Physics2D.gravity.y *
-                (fallMultiplier - 1) * Time.deltaTime;
-        }
+            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         else if (rb.linearVelocity.y > 0 && !jumpHeld)
-        {
-            rb.linearVelocity += Vector2.up * Physics2D.gravity.y *
-                (lowJumpMultiplier - 1) * Time.deltaTime;
-        }
+            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
 
         if (moveInput.x > 0.01f) sr.flipX = false;
         else if (moveInput.x < -0.01f) sr.flipX = true;
@@ -136,16 +117,10 @@ public class PlayerController : MonoBehaviour
 
         float targetSpeed = moveInput.x * moveSpeed;
         float speedDiff = targetSpeed - rb.linearVelocity.x;
-
         float accelRate = Mathf.Abs(targetSpeed) > 0.01f ? acceleration : deceleration;
+        if (!isGrounded) accelRate *= 0.6f;
 
-        if (!isGrounded)
-            accelRate *= 0.6f;
-
-        float movement = speedDiff * accelRate;
-
-        rb.AddForce(Vector2.right * movement);
-
+        rb.AddForce(Vector2.right * (speedDiff * accelRate));
         rb.linearVelocity = new Vector2(
             Mathf.Clamp(rb.linearVelocity.x, -moveSpeed, moveSpeed),
             rb.linearVelocity.y);
@@ -153,22 +128,22 @@ public class PlayerController : MonoBehaviour
 
     void ExecuteJump()
     {
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-
         anim.SetTrigger(AnimJump);
 
-        //AudioManager.Instance?.PlaySFX("jump");
-        //CameraShake.Instance?.Shake(0.1f, 0.1f);
 
         isJumping = true;
         jumpHoldCounter = 0f;
     }
 
+    void OnLand()
+    {
+
+    }
+
     public void Die()
     {
         if (isDead) return;
-
         isDead = true;
 
         rb.linearVelocity = Vector2.zero;
@@ -176,13 +151,11 @@ public class PlayerController : MonoBehaviour
 
         anim.SetTrigger(AnimDie);
 
+
         Invoke(nameof(TriggerGameOver), 1.2f);
     }
 
-    void TriggerGameOver()
-    {
-        GameManager.Instance?.GameOver();
-    }
+    void TriggerGameOver() => GameManager.Instance?.GameOver();
 
     public void SaveCheckpoint(Vector3 position)
     {
@@ -195,19 +168,15 @@ public class PlayerController : MonoBehaviour
     void LoadCheckpoint()
     {
         if (PlayerPrefs.HasKey(CP_X))
-        {
-            float x = PlayerPrefs.GetFloat(CP_X);
-            float y = PlayerPrefs.GetFloat(CP_Y);
-            float z = PlayerPrefs.GetFloat(CP_Z);
-
-            transform.position = new Vector3(x, y, z);
-        }
+            transform.position = new Vector3(
+                PlayerPrefs.GetFloat(CP_X),
+                PlayerPrefs.GetFloat(CP_Y),
+                PlayerPrefs.GetFloat(CP_Z));
     }
 
     void OnDrawGizmosSelected()
     {
         if (groundCheck == null) return;
-
         Gizmos.color = isGrounded ? Color.green : Color.red;
         Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
     }

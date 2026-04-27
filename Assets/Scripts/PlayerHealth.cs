@@ -1,13 +1,14 @@
 using UnityEngine;
 using System.Collections;
 
+
 public class PlayerHealth : MonoBehaviour
 {
-    [Header("Stats")]
     public int maxLives = 3;
     public float invincibilityDuration = 1.5f;
 
-    private int currentLives;
+    public int currentLives;
+
     private bool isInvincible = false;
     private SpriteRenderer sr;
     private PlayerController controller;
@@ -29,6 +30,8 @@ public class PlayerHealth : MonoBehaviour
         if (isInvincible) return;
 
         currentLives--;
+
+
         UIManager.Instance?.UpdateLives(currentLives);
 
         if (currentLives <= 0)
@@ -39,9 +42,9 @@ public class PlayerHealth : MonoBehaviour
 
     public void KillInstantly()
     {
-        StopAllCoroutines();    
+        StopAllCoroutines();
         isInvincible = false;
-        sr.enabled = true;     
+        sr.enabled = true;
         currentLives = 0;
         UIManager.Instance?.UpdateLives(currentLives);
         controller.Die();
